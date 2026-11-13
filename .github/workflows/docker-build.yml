@@ -5,6 +5,7 @@
 name: Docker Build
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Spring Boot CI", "Express.js CI", "Laravel CI"]
     types: [completed]
@@ -13,8 +14,8 @@ jobs:
   build-and-push:
     name: Build & Push to GHCR
     runs-on: ubuntu-latest
-    # Exécution conditionnelle : uniquement en cas de succès du workflow CI déclencheur
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Exécution conditionnelle : en manuel (workflow_dispatch) OU en cas de succès du workflow CI déclencheur
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     # Moindre privilège : droit d'écriture restreint à GHCR (packages: write)
     permissions:
