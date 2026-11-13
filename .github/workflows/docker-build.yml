@@ -44,18 +44,7 @@ jobs:
         id: repo_owner
         run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
-      # 5. Compilation du JAR Spring Boot (requis pour le Dockerfile qui fait `COPY target/*.jar app.jar`)
-      - name: Set up JDK 27 for Spring Boot
-        uses: actions/setup-java@v4
-        with:
-          java-version: '27'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Package Spring Boot Application
-        run: mvn -B package -DskipTests --file spring-api/pom.xml
-
-      # 6. Construction et publication de l'image Spring Boot
+      # 5. Construction et publication de l'image Spring Boot (le Dockerfile compile le JAR)
       - name: Build & Push Spring API Image
         uses: docker/build-push-action@v5
         with:

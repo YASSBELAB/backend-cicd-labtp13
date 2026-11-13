@@ -1,10 +1,4 @@
-target/classes/
-target/generated-sources/
-target/generated-test-sources/
-target/maven-status/
-target/maven-archiver/
-target/surefire-reports/
-target/test-classes/
+target/
 .idea/
 .git/
 *.iml
