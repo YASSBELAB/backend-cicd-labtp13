@@ -44,26 +44,40 @@ jobs:
         id: repo_owner
         run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
-      # 5. Construction et publication de l'image Spring Boot
+      # 5. Compilation du JAR Spring Boot (requis pour le Dockerfile qui fait `COPY target/*.jar app.jar`)
+      - name: Set up JDK 27 for Spring Boot
+        uses: actions/setup-java@v4
+        with:
+          java-version: '27'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Package Spring Boot Application
+        run: mvn -B package -DskipTests --file spring-api/pom.xml
+
+      # 6. Construction et publication de l'image Spring Boot
       - name: Build & Push Spring API Image
         uses: docker/build-push-action@v5
         with:
           context: ./spring-api
           push: true
+          provenance: false
           tags: ghcr.io/${{ steps.repo_owner.outputs.owner }}/spring-api:latest
 
-      # 6. Construction et publication de l'image Express.js
+      # 7. Construction et publication de l'image Express.js
       - name: Build & Push Express API Image
         uses: docker/build-push-action@v5
         with:
           context: ./express-api
           push: true
+          provenance: false
           tags: ghcr.io/${{ steps.repo_owner.outputs.owner }}/express-api:latest
 
-      # 7. Construction et publication de l'image Laravel
+      # 8. Construction et publication de l'image Laravel
       - name: Build & Push Laravel API Image
         uses: docker/build-push-action@v5
         with:
           context: ./laravel-api
           push: true
+          provenance: false
           tags: ghcr.io/${{ steps.repo_owner.outputs.owner }}/laravel-api:latest
