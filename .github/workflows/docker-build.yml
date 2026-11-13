@@ -29,7 +29,7 @@ jobs:
 
       # 2. Configuration du builder Docker Buildx
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # 3. Authentification sécurisée auprès de GitHub Container Registry (GHCR)
       - name: Log in to GitHub Container Registry
