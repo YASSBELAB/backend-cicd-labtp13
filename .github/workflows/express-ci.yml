@@ -17,6 +17,30 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: product_api
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: product_api
+      API_KEY: ci-test-api-key
+      JWT_SECRET: ci-test-jwt-secret
+      JWT_REFRESH_SECRET: ci-test-refresh-secret
+
     steps:
       # 1. Récupération du code source
       - name: Checkout repository
@@ -33,6 +57,9 @@ jobs:
       # 3. Installation propre et déterministe des dépendances
       - name: Install Dependencies
         run: npm ci --prefix express-api
+
+      - name: Initialize MySQL schema
+        run: node express-api/src/test-db-init.js
 
       # 4. Analyse statique du code avec ESLint
       # continue-on-error: false force l'arrêt immédiat en cas d'erreurs de lint
