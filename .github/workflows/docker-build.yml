@@ -46,7 +46,7 @@ jobs:
 
       # 5. Construction et publication de l'image Spring Boot (le Dockerfile compile le JAR)
       - name: Build & Push Spring API Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./spring-api
           push: true
@@ -55,7 +55,7 @@ jobs:
 
       # 7. Construction et publication de l'image Express.js
       - name: Build & Push Express API Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./express-api
           push: true
@@ -64,7 +64,7 @@ jobs:
 
       # 8. Construction et publication de l'image Laravel
       - name: Build & Push Laravel API Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./laravel-api
           push: true
