@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { afterAll, beforeAll, describe, it } from '@jest/globals';
 import app from '../src/app.js';
 import pool from '../src/config/db.js';
 
@@ -11,7 +12,7 @@ describe('API Security (API_KEY & JWT) + Products/Categories/Auth', () => {
     password: 'Password123!'
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await request(app)
       .post('/api/auth/register')
       .set('Authorization', `Bearer ${apiKey}`)
@@ -30,7 +31,7 @@ describe('API Security (API_KEY & JWT) + Products/Categories/Auth', () => {
     jwtToken = loginRes.body.token;
   });
 
-  after(async () => {
+  afterAll(async () => {
     if (jwtToken) {
       await request(app)
         .delete('/api/auth/me')

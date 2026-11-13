@@ -70,4 +70,12 @@ jobs:
       # 5. Exécution de la suite de tests (PHPUnit / Pest)
       - name: Run Tests
         working-directory: laravel-api
-        run: php artisan test
+        run: mkdir -p reports && vendor/bin/phpunit --log-junit reports/phpunit.xml
+
+      - name: Upload PHPUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laravel-phpunit-report
+          path: laravel-api/reports/phpunit.xml
+          if-no-files-found: warn

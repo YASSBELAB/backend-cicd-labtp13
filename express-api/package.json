@@ -8,7 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "lint": "eslint src/ || echo 'ESLint check passed'",
-    "test": "mocha"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --json --outputFile=jest-results.json"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -22,7 +22,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "mocha": "^12.0.3",
+    "jest": "^30.5.2",
     "nodemon": "^3.1.14",
     "supertest": "^7.3.2"
   }

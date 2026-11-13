@@ -70,3 +70,11 @@ jobs:
       # 5. Exécution de la suite de tests unitaires / intégration
       - name: Run Tests
         run: npm test --prefix express-api
+
+      - name: Upload Jest report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: express-jest-report
+          path: express-api/jest-results.json
+          if-no-files-found: warn

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Admin\Desktop\tp13\laravel-api\phpunit.xml" tests="41" assertions="125" errors="1" failures="0" skipped="0" time="5.359081">
+    <testsuite name="Unit" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.003014">
+      <testsuite name="Tests\Unit\ExampleTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Unit\ExampleTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.003014">
+        <testcase name="test_that_true_is_true" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Unit\ExampleTest.php" line="12" class="Tests\Unit\ExampleTest" classname="Tests.Unit.ExampleTest" assertions="1" time="0.003014"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="Feature" tests="40" assertions="124" errors="1" failures="0" skipped="0" time="5.356067">
+      <testsuite name="Tests\Feature\ApiKeyMiddlewareTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ApiKeyMiddlewareTest.php" tests="3" assertions="12" errors="0" failures="0" skipped="0" time="0.874910">
+        <testcase name="test_requests_without_api_key_are_rejected_with_401" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ApiKeyMiddlewareTest.php" line="15" class="Tests\Feature\ApiKeyMiddlewareTest" classname="Tests.Feature.ApiKeyMiddlewareTest" assertions="6" time="0.561801">
+          <system-out>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</system-out>
+        </testcase>
+        <testcase name="test_requests_with_invalid_api_key_are_rejected_with_401" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ApiKeyMiddlewareTest.php" line="22" class="Tests\Feature\ApiKeyMiddlewareTest" classname="Tests.Feature.ApiKeyMiddlewareTest" assertions="3" time="0.057307">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_requests_with_valid_api_key_succeed" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ApiKeyMiddlewareTest.php" line="31" class="Tests\Feature\ApiKeyMiddlewareTest" classname="Tests.Feature.ApiKeyMiddlewareTest" assertions="3" time="0.255802">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\AuthenticationTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\AuthenticationTest.php" tests="4" assertions="13" errors="0" failures="0" skipped="0" time="0.483778">
+        <testcase name="test_user_can_login_and_access_protected_route" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\AuthenticationTest.php" line="22" class="Tests\Feature\AuthenticationTest" classname="Tests.Feature.AuthenticationTest" assertions="3" time="0.093830">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_user_can_register" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\AuthenticationTest.php" line="41" class="Tests\Feature\AuthenticationTest" classname="Tests.Feature.AuthenticationTest" assertions="5" time="0.056146">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_user_cannot_login_with_invalid_credentials" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\AuthenticationTest.php" line="62" class="Tests\Feature\AuthenticationTest" classname="Tests.Feature.AuthenticationTest" assertions="2" time="0.264478">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_user_can_logout" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\AuthenticationTest.php" line="78" class="Tests\Feature\AuthenticationTest" classname="Tests.Feature.AuthenticationTest" assertions="3" time="0.069324">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\ExampleTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExampleTest.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.204166">
+        <testcase name="test_the_application_returns_a_successful_response" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExampleTest.php" line="13" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" assertions="0" time="0.204166">
+          <error type="Illuminate\Encryption\MissingAppKeyException">Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response&#13;
+Illuminate\Encryption\MissingAppKeyException: No application encryption key has been specified.
+&#13;
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:83
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Support\helpers.php:393
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:81
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:64
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:32
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:1144
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:939
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:1086
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:867
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:1066
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:1367
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:1268
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:1191
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:939
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:1086
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Container\Container.php:867
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:1066
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php:257
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php:215
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php:642
+C:\Users\Admin\Desktop\tp13\laravel-api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php:368
+C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExampleTest.php:15</error>
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\ExceptionHandlingTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExceptionHandlingTest.php" tests="3" assertions="6" errors="0" failures="0" skipped="0" time="0.182442">
+        <testcase name="test_unauthenticated_request_returns_401_with_custom_message" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExceptionHandlingTest.php" line="36" class="Tests\Feature\ExceptionHandlingTest" classname="Tests.Feature.ExceptionHandlingTest" assertions="2" time="0.055344">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_unauthorized_action_returns_403_with_acces_refuse" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExceptionHandlingTest.php" line="46" class="Tests\Feature\ExceptionHandlingTest" classname="Tests.Feature.ExceptionHandlingTest" assertions="2" time="0.077652">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_missing_token_ability_returns_403_with_permission_manquante" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ExceptionHandlingTest.php" line="70" class="Tests\Feature\ExceptionHandlingTest" classname="Tests.Feature.ExceptionHandlingTest" assertions="2" time="0.049445">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\OrderAuthorizationTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" tests="14" assertions="37" errors="0" failures="0" skipped="0" time="1.702881">
+        <testcase name="test_admin_can_view_all_orders" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="44" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="3" time="0.070154">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_sees_only_own_orders_in_list" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="64" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="3" time="0.062912">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_sees_orders_matched_by_client_id_or_client_email" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="84" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="4" time="0.061756">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_view_any_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="108" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.126085">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_can_view_own_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="122" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.224476">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_cannot_view_another_users_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="136" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="1" time="0.181298">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_create_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="149" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="3" time="0.242783">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_can_create_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="172" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="3" time="0.074977">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_can_create_order_without_explicit_client_id" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="195" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="3" time="0.105152">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_update_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="217" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.089330">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_cannot_update_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="237" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.122799">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_delete_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="257" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.161397">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_cannot_delete_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="271" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="2" time="0.085967">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_unauthenticated_cannot_access_orders" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderAuthorizationTest.php" line="285" class="Tests\Feature\OrderAuthorizationTest" classname="Tests.Feature.OrderAuthorizationTest" assertions="5" time="0.093794">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\OrderRelationshipTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderRelationshipTest.php" tests="1" assertions="4" errors="0" failures="0" skipped="0" time="0.051138">
+        <testcase name="test_order_has_items_and_client" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\OrderRelationshipTest.php" line="16" class="Tests\Feature\OrderRelationshipTest" classname="Tests.Feature.OrderRelationshipTest" assertions="4" time="0.051138">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\ProductApiTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" tests="6" assertions="25" errors="0" failures="0" skipped="0" time="0.297851">
+        <testcase name="test_can_list_products" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="37" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="12" time="0.059308">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_can_show_single_product" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="55" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="4" time="0.043974">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_create_product" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="73" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="4" time="0.054800">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_normal_user_cannot_create_product" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="94" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="1" time="0.045651">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_update_product" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="108" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="2" time="0.050325">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_can_delete_product" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\ProductApiTest.php" line="125" class="Tests\Feature\ProductApiTest" classname="Tests.Feature.ProductApiTest" assertions="2" time="0.043793">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\SecurityConfigurationTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\SecurityConfigurationTest.php" tests="3" assertions="9" errors="0" failures="0" skipped="0" time="1.338471">
+        <testcase name="test_rate_limiting_throttles_excessive_login_attempts" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\SecurityConfigurationTest.php" line="14" class="Tests\Feature\SecurityConfigurationTest" classname="Tests.Feature.SecurityConfigurationTest" assertions="6" time="1.085729">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_cors_configuration_allows_configured_origins" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\SecurityConfigurationTest.php" line="41" class="Tests\Feature\SecurityConfigurationTest" classname="Tests.Feature.SecurityConfigurationTest" assertions="2" time="0.022409">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_token_api_requests_do_not_require_csrf_token" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\SecurityConfigurationTest.php" line="53" class="Tests\Feature\SecurityConfigurationTest" classname="Tests.Feature.SecurityConfigurationTest" assertions="1" time="0.230332">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\TokenAbilityTest" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" tests="5" assertions="18" errors="0" failures="0" skipped="0" time="0.220430">
+        <testcase name="test_login_creates_token_with_correct_abilities" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" line="46" class="Tests\Feature\TokenAbilityTest" classname="Tests.Feature.TokenAbilityTest" assertions="4" time="0.043625">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_token_without_order_create_ability_cannot_create_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" line="69" class="Tests\Feature\TokenAbilityTest" classname="Tests.Feature.TokenAbilityTest" assertions="2" time="0.036744">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_token_without_order_view_ability_cannot_view_orders" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" line="84" class="Tests\Feature\TokenAbilityTest" classname="Tests.Feature.TokenAbilityTest" assertions="4" time="0.038996">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_token_with_user_abilities_cannot_update_or_delete_order" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" line="102" class="Tests\Feature\TokenAbilityTest" classname="Tests.Feature.TokenAbilityTest" assertions="4" time="0.040552">
+          <system-out>
+
+</system-out>
+        </testcase>
+        <testcase name="test_admin_token_with_wildcard_can_perform_all_actions" file="C:\Users\Admin\Desktop\tp13\laravel-api\tests\Feature\TokenAbilityTest.php" line="123" class="Tests\Feature\TokenAbilityTest" classname="Tests.Feature.TokenAbilityTest" assertions="4" time="0.060513">
+          <system-out>
+
+</system-out>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
