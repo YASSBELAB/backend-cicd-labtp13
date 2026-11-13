@@ -1,0 +1,71 @@
+# ==============================================================================
+# Pipeline CI : Laravel (PHP)
+# Configure l'environnement PHP, démarre un conteneur MySQL isolé et lance PHPUnit
+# ==============================================================================
+name: Laravel CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & Test (PHP 8.2 / MySQL)
+    runs-on: ubuntu-latest
+
+    # Application du principe du moindre privilège (DevSecOps)
+    permissions:
+      contents: read
+
+    # Service de base de données MySQL conteneurisé et isolé pour les tests
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    # Variables d'environnement injectées dynamiquement au niveau du job
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: test_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    steps:
+      # 1. Récupération du code source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configuration de l'environnement PHP et de l'extension de couverture
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+
+      # 3. Mise en cache des dépendances Composer pour accélérer l'exécution
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: laravel-api/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('laravel-api/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # 4. Installation des dépendances via Composer
+      - name: Install Composer Dependencies
+        run: composer install --working-dir=laravel-api --ignore-platform-reqs
+
+      # 5. Exécution de la suite de tests (PHPUnit / Pest)
+      - name: Run Tests
+        working-directory: laravel-api
+        run: php artisan test

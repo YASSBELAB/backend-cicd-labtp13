@@ -1,0 +1,56 @@
+# ==============================================================================
+# Pipeline CI : Spring Boot (Maven)
+# Déclenche la compilation et l'exécution des tests JUnit avec génération de rapports
+# ==============================================================================
+name: Spring Boot CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & Test (Java 27 / Maven)
+    runs-on: ubuntu-latest
+
+    # Application du principe du moindre privilège (DevSecOps)
+    permissions:
+      contents: read
+
+    steps:
+      # 1. Récupération du code source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configuration de l'environnement Java (JDK 27 Temurin)
+      - name: Set up JDK 27
+        uses: actions/setup-java@v4
+        with:
+          java-version: '27'
+          distribution: 'temurin'
+
+      # 3. Mise en cache des paquets Maven (~/.m2) pour accélérer les builds
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # 4. Compilation du projet Spring Boot en mode batch (-B)
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file spring-api/pom.xml
+
+      # 5. Exécution des tests unitaires et d'intégration JUnit
+      - name: Run Tests
+        run: mvn -B test --file spring-api/pom.xml
+
+      # 6. Archivage du rapport JUnit XML (Surefire) en tant qu'artefact
+      # La condition if: always() garantit l'upload même en cas d'échec des tests
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-test-results
+          path: spring-api/target/surefire-reports/

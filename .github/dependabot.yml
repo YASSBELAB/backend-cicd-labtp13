@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Analyse des workflows GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Analyse des dépendances Spring Boot (Maven)
+  - package-ecosystem: "maven"
+    directory: "/spring-api"
+    schedule:
+      interval: "weekly"
+
+  # Analyse des dépendances Express.js (npm)
+  - package-ecosystem: "npm"
+    directory: "/express-api"
+    schedule:
+      interval: "weekly"
+
+  # Analyse des dépendances Laravel (Composer)
+  - package-ecosystem: "composer"
+    directory: "/laravel-api"
+    schedule:
+      interval: "weekly"

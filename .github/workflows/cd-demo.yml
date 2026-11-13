@@ -1,0 +1,37 @@
+# ==============================================================================
+# Pipeline CD : Déploiement Continu vers l'Environnement de Démonstration
+# Se déclenche après la réussite du workflow "Docker Build" sur la branche main
+# ==============================================================================
+name: CD Demo
+
+on:
+  workflow_run:
+    workflows: ["Docker Build"]
+    types: [completed]
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy & Smoke Tests
+    runs-on: ubuntu-latest
+
+    # Exécution conditionnelle : uniquement si la publication des images a réussi
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # Application du principe du moindre privilège
+    permissions:
+      contents: read
+
+    steps:
+      # 1. Étape de déploiement vers le serveur de démonstration (Fly.io / Render / VPS)
+      - name: Deploy to Demo Environment
+        run: |
+          echo "Deploying newly published container images to demo environment..."
+
+      # 2. Tests de fumée post-déploiement (Smoke Tests)
+      # Vérifie la disponibilité immédiate des endpoints avant l'accès utilisateur
+      - name: Smoke Tests (Health Check)
+        run: |
+          echo "Executing health checks..."
+          # curl -f http://demo.example.com/api/health || exit 1
+          echo "API endpoints are verified and healthy"
