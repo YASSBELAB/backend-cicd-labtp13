@@ -1,0 +1,1140 @@
+openapi: 3.0.0
+info:
+  title: 'E-Commerce API'
+  description: "Documentation de l'API RESTful Laravel (Produits, Catégories, Clients, Commandes, Authentification).\n\nSécurité :\n- Les endpoints Products (lecture), Categories et Clients sont protégés par clé API via l'en-tête `Authorization: Bearer {API_KEY}` (ou token Sanctum).\n- Les endpoints protégés d'écriture Produits et Commandes requièrent un token Bearer Sanctum."
+  version: 1.0.0
+servers:
+  -
+    url: 'http://127.0.0.1:8000'
+    description: 'Serveur API Laravel'
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: "Inscription d'un nouvel utilisateur"
+      operationId: c7bb21a0d87049e161b8e4c9b0d909f2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  example: 'Normal User'
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: password123
+              type: object
+      responses:
+        201:
+          description: 'Utilisateur enregistré avec succès'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'User registered successfully'
+                  access_token:
+                    type: string
+                    example: 1|abc123def456...
+                  token_type:
+                    type: string
+                    example: Bearer
+                type: object
+        422:
+          description: 'Erreur de validation'
+        429:
+          description: 'Trop de requêtes'
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: 'Connexion et génération du token Sanctum'
+      operationId: dd51a484b7fa0f97c7680fdbde14cf5f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+                - device_name
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+                device_name:
+                  type: string
+                  example: SwaggerUI
+              type: object
+      responses:
+        200:
+          description: 'Connexion réussie'
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_token:
+                    type: string
+                    example: 1|abc123def456...
+                  token_type:
+                    type: string
+                    example: Bearer
+                type: object
+        401:
+          description: 'Identifiants invalides'
+        429:
+          description: 'Trop de tentatives'
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: "Afficher le profil de l'utilisateur connecté"
+      operationId: b5de204f5e452ef51327c691aa99e77c
+      responses:
+        200:
+          description: 'Profil utilisateur'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: 'Non authentifié'
+      security:
+        -
+          bearerAuth: []
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: 'Déconnexion et révocation du token actif'
+      operationId: df9bdc6c7a6d9f20b983526b2ec0f698
+      responses:
+        200:
+          description: Déconnecté
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged out'
+                type: object
+        401:
+          description: 'Non authentifié'
+      security:
+        -
+          bearerAuth: []
+  /api/categories:
+    get:
+      tags:
+        - Categories
+      summary: 'Liste des catégories'
+      operationId: 3f5817a34833d0a1f4af4548dd3aeaba
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        401:
+          description: 'Clé API invalide ou manquante'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Categories
+      summary: 'Créer une catégorie'
+      operationId: 71fcad552bb0eaba9fb191fd8d8dcab0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Informatique
+                description:
+                  type: string
+                  example: 'Ordinateurs et périphériques'
+                  nullable: true
+              type: object
+      responses:
+        201:
+          description: 'Catégorie créée'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        401:
+          description: 'Clé API invalide ou manquante'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+  '/api/categories/{category}':
+    get:
+      tags:
+        - Categories
+      summary: 'Afficher une catégorie'
+      operationId: e92579e78391b6199e78c2a091dbea0a
+      parameters:
+        -
+          name: category
+          in: path
+          description: 'ID de la catégorie'
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Catégorie introuvable'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Categories
+      summary: 'Mettre à jour une catégorie'
+      operationId: 02aa39951e67916277e28086f85909c8
+      parameters:
+        -
+          name: category
+          in: path
+          description: 'ID de la catégorie'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  example: Périphériques
+                description:
+                  type: string
+                  example: 'Claviers, souris et écrans'
+                  nullable: true
+              type: object
+      responses:
+        200:
+          description: 'Catégorie mise à jour'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Catégorie introuvable'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Categories
+      summary: 'Supprimer une catégorie'
+      operationId: d9ecd5c4a74c4d75339251863eedc08c
+      parameters:
+        -
+          name: category
+          in: path
+          description: 'ID de la catégorie'
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: 'Catégorie supprimée'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Catégorie introuvable'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+  /api/clients:
+    get:
+      tags:
+        - Clients
+      summary: 'Liste des clients'
+      operationId: d00d20521584ab5da83e088abb7aded2
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        401:
+          description: 'Clé API invalide ou manquante'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Clients
+      summary: 'Créer un client'
+      operationId: f1e86e5b79fedfa6593067977292b13b
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - first_name
+                - last_name
+                - email
+              properties:
+                first_name:
+                  type: string
+                  example: Jean
+                last_name:
+                  type: string
+                  example: Dupont
+                email:
+                  type: string
+                  format: email
+                  example: jean.dupont@example.com
+                phone:
+                  type: string
+                  example: '+33612345678'
+                  nullable: true
+                address:
+                  type: string
+                  example: '12 Rue de Paris'
+                  nullable: true
+              type: object
+      responses:
+        201:
+          description: 'Client créé'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        401:
+          description: 'Clé API invalide ou manquante'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+  '/api/clients/{client}':
+    get:
+      tags:
+        - Clients
+      summary: 'Afficher un client'
+      operationId: e1b94279234de95a7144b78642cd2e45
+      parameters:
+        -
+          name: client
+          in: path
+          description: 'ID du client'
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Client introuvable'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Clients
+      summary: 'Mettre à jour un client'
+      operationId: 0c9a2108c7f6120cd8c12ece56a85b74
+      parameters:
+        -
+          name: client
+          in: path
+          description: 'ID du client'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                first_name:
+                  type: string
+                  example: Jean
+                last_name:
+                  type: string
+                  example: Dupont
+                email:
+                  type: string
+                  format: email
+                  example: jean.dupont@example.com
+                phone:
+                  type: string
+                  example: '+33612345678'
+                  nullable: true
+                address:
+                  type: string
+                  example: '12 Rue de Paris'
+                  nullable: true
+              type: object
+      responses:
+        200:
+          description: 'Client mis à jour'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Client introuvable'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Clients
+      summary: 'Supprimer un client'
+      operationId: 2d450bfd555b490e7e9cdd602d1db8e3
+      parameters:
+        -
+          name: client
+          in: path
+          description: 'ID du client'
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: 'Client supprimé'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Client introuvable'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+  /api/orders:
+    get:
+      tags:
+        - Orders
+      summary: 'Lister les commandes (toutes pour ADMIN, personnelles pour USER)'
+      operationId: 2cd7e03021e72d9d799c12dfe179c865
+      responses:
+        200:
+          description: 'Liste paginée des commandes'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Permission manquante'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Orders
+      summary: 'Créer une nouvelle commande (USER et ADMIN)'
+      operationId: d690d6834318e9b064df441e854de8b9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - items
+              properties:
+                client_id:
+                  type: integer
+                  example: 1
+                  nullable: true
+                items:
+                  type: array
+                  items:
+                    required:
+                      - product_id
+                      - quantity
+                    properties:
+                      product_id:
+                        type: integer
+                        example: 1
+                      quantity:
+                        type: integer
+                        example: 2
+                    type: object
+              type: object
+      responses:
+        201:
+          description: 'Commande créée avec succès'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Permission manquante'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          bearerAuth: []
+  '/api/orders/{order}':
+    get:
+      tags:
+        - Orders
+      summary: 'Afficher une commande (ADMIN ou propriétaire)'
+      operationId: f090f23952a43521af6f1d133826bc37
+      parameters:
+        -
+          name: order
+          in: path
+          description: 'ID de la commande'
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Détails de la commande'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé'
+        404:
+          description: 'Commande introuvable'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Orders
+      summary: 'Mettre à jour une commande (ADMIN uniquement)'
+      operationId: 9f326acfc8febad161872da8dc13508f
+      parameters:
+        -
+          name: order
+          in: path
+          description: 'ID de la commande'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  type: string
+                  example: paid
+                  enum:
+                    - pending
+                    - paid
+                    - shipped
+                    - cancelled
+                client_id:
+                  type: integer
+                  example: 1
+                items:
+                  type: array
+                  items:
+                    properties:
+                      product_id:
+                        type: integer
+                        example: 1
+                      quantity:
+                        type: integer
+                        example: 3
+                    type: object
+              type: object
+      responses:
+        200:
+          description: 'Commande mise à jour'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé / Permission manquante'
+        404:
+          description: 'Commande introuvable'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Orders
+      summary: 'Supprimer une commande (ADMIN uniquement)'
+      operationId: 173211a50d204e6c949d9b18baa95efb
+      parameters:
+        -
+          name: order
+          in: path
+          description: 'ID de la commande'
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: 'Commande supprimée'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé / Permission manquante'
+        404:
+          description: 'Commande introuvable'
+      security:
+        -
+          bearerAuth: []
+    patch:
+      tags:
+        - Orders
+      summary: 'Mettre à jour partiellement une commande (ADMIN uniquement)'
+      operationId: 777bd8391d3cf8ab456dd254aed4b367
+      parameters:
+        -
+          name: order
+          in: path
+          description: 'ID de la commande'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  type: string
+                  example: shipped
+                  enum:
+                    - pending
+                    - paid
+                    - shipped
+                    - cancelled
+              type: object
+      responses:
+        200:
+          description: 'Commande mise à jour'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé / Permission manquante'
+      security:
+        -
+          bearerAuth: []
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: 'Liste des produits'
+      operationId: 1bfaa78d1c2c3848ab8165c5dadcad3e
+      parameters:
+        -
+          name: q
+          in: query
+          description: 'Terme de recherche'
+          required: false
+          schema:
+            type: string
+        -
+          name: name
+          in: query
+          description: 'Filtrer par nom'
+          required: false
+          schema:
+            type: string
+        -
+          name: price_min
+          in: query
+          description: 'Prix minimum'
+          required: false
+          schema:
+            type: number
+        -
+          name: price_max
+          in: query
+          description: 'Prix maximum'
+          required: false
+          schema:
+            type: number
+        -
+          name: sort
+          in: query
+          description: 'Champ de tri (id, name, price, stock)'
+          required: false
+          schema:
+            type: string
+        -
+          name: direction
+          in: query
+          description: 'Direction du tri (asc, desc)'
+          required: false
+          schema:
+            type: string
+        -
+          name: per_page
+          in: query
+          description: "Nombre d'éléments par page"
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        401:
+          description: 'Clé API invalide ou manquante'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Products
+      summary: 'Créer un nouveau produit'
+      operationId: e8185e307706e2cd84bbcf5171e2f09d
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - price
+                - stock
+                - category_id
+              properties:
+                name:
+                  type: string
+                  example: 'Laptop Pro'
+                description:
+                  type: string
+                  example: 'Ordinateur portable haute performance'
+                price:
+                  type: number
+                  format: float
+                  example: 1299.99
+                stock:
+                  type: integer
+                  example: 25
+                category_id:
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        201:
+          description: 'Produit créé avec succès'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé'
+        422:
+          description: 'Erreur de validation'
+      security:
+        -
+          bearerAuth: []
+  '/api/products/{product}':
+    get:
+      tags:
+        - Products
+      summary: 'Afficher un produit'
+      operationId: 05f6ffcb49f47b4f4fc1a1c21ed60011
+      parameters:
+        -
+          name: product
+          in: path
+          description: 'ID du produit'
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        401:
+          description: 'Clé API invalide ou manquante'
+        404:
+          description: 'Produit introuvable'
+      security:
+        -
+          apiKeyBearer: []
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Products
+      summary: 'Mettre à jour un produit'
+      operationId: c474d1318e5b8c3de1f4d52b6053111f
+      parameters:
+        -
+          name: product
+          in: path
+          description: 'ID du produit'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  example: 'Laptop Pro M3'
+                description:
+                  type: string
+                  example: 'Version mise à jour'
+                price:
+                  type: number
+                  format: float
+                  example: 1499.99
+                stock:
+                  type: integer
+                  example: 15
+                category_id:
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        200:
+          description: 'Produit mis à jour'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé'
+        404:
+          description: 'Produit introuvable'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Products
+      summary: 'Supprimer un produit'
+      operationId: 1a0a353d0842ff4f9347bb66ec53e3ea
+      parameters:
+        -
+          name: product
+          in: path
+          description: 'ID du produit'
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Produit supprimé avec succès'
+        401:
+          description: 'Non authentifié'
+        403:
+          description: 'Accès refusé'
+        404:
+          description: 'Produit introuvable'
+        409:
+          description: 'Produit déjà utilisé dans une commande'
+      security:
+        -
+          bearerAuth: []
+components:
+  schemas:
+    Category:
+      title: Category
+      description: 'Modèle de catégorie'
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Électronique
+        description:
+          type: string
+          example: 'Appareils électroniques et accessoires'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    Client:
+      title: Client
+      description: 'Modèle de client'
+      required:
+        - first_name
+        - last_name
+        - email
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Jean
+        last_name:
+          type: string
+          example: Dupont
+        email:
+          type: string
+          format: email
+          example: jean.dupont@example.com
+        phone:
+          type: string
+          example: '+33612345678'
+          nullable: true
+        address:
+          type: string
+          example: '12 Rue de Paris, 75001 Paris'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+      type: object
+    Order:
+      title: Order
+      description: 'Modèle de commande'
+      properties:
+        id:
+          type: integer
+          example: 1
+        client:
+          $ref: '#/components/schemas/Client'
+        total_amount:
+          type: number
+          format: float
+          example: 159.98
+        status:
+          type: string
+          example: pending
+          enum:
+            - pending
+            - paid
+            - shipped
+            - cancelled
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        created_at:
+          type: string
+          format: date-time
+      type: object
+    OrderItem:
+      title: OrderItem
+      description: "Ligne d'article dans une commande"
+      properties:
+        id:
+          type: integer
+          example: 1
+        order_id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 3
+        quantity:
+          type: integer
+          example: 2
+        unit_price:
+          type: number
+          format: float
+          example: 79.99
+        product:
+          $ref: '#/components/schemas/Product'
+      type: object
+    Product:
+      title: Product
+      description: 'Modèle de produit'
+      required:
+        - name
+        - price
+        - stock
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Laptop Pro'
+        price:
+          type: number
+          format: float
+          example: 1299.99
+        stock:
+          type: integer
+          example: 25
+        description:
+          type: string
+          example: 'Ordinateur portable haute performance'
+          nullable: true
+        category_id:
+          type: integer
+          example: 1
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    User:
+      title: User
+      description: 'Modèle utilisateur'
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Admin User'
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+  securitySchemes:
+    apiKeyBearer:
+      type: http
+      description: 'Clé API envoyée via le header `Authorization: Bearer {API_KEY}`'
+      scheme: bearer
+    bearerAuth:
+      type: http
+      description: 'Token Bearer Sanctum obtenu via /api/auth/login'
+      bearerFormat: JWT
+      scheme: bearer
+tags:
+  -
+    name: Authentication
+    description: Authentication
+  -
+    name: Categories
+    description: Categories
+  -
+    name: Clients
+    description: Clients
+  -
+    name: Orders
+    description: Orders
+  -
+    name: Products
+    description: Products

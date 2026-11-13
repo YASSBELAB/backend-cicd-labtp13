@@ -1,0 +1,890 @@
+openapi: 3.0.0
+info:
+  title: Product API – Express
+  version: '1.0.0'
+  description: >
+    API REST Node.js / Express avec authentification JWT (Access + Refresh Token),
+    gestion des rôles (USER / ADMIN), produits et catégories.
+
+servers:
+  - url: http://localhost:3000
+    description: Serveur local de développement
+
+tags:
+  - name: General
+    description: Point d'entrée de l'API
+  - name: Auth
+    description: Inscription, connexion, rafraîchissement de token et profil utilisateur
+  - name: Products
+    description: Gestion des produits (authentification JWT requise ; écriture réservée aux ADMIN)
+  - name: Categories
+    description: Gestion des catégories
+
+paths:
+  /:
+    get:
+      tags: [General]
+      summary: Vérifier l'état de l'API
+      responses:
+        '200':
+          description: Message de bienvenue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Welcome to Product REST API - LAB 7
+
+  /health:
+    get:
+      tags: [General]
+      summary: Vérifier la santé du service (Docker HEALTHCHECK)
+      responses:
+        '200':
+          description: Service opérationnel
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Créer un compte utilisateur
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully
+                  id:
+                    type: integer
+                    example: 1
+        '400':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Utilisateur déjà existant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Se connecter et obtenir un JWT (access + refresh token)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Clé API invalide/manquante ou identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+
+  /api/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Rafraîchir le token d'accès JWT
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshInput'
+      responses:
+        '200':
+          description: Nouveau token d'accès généré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Clé API invalide ou refresh token manquant, invalide ou expiré
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Récupérer le profil de l'utilisateur connecté
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profil utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+    delete:
+      tags: [Auth]
+      summary: Supprimer le compte de l'utilisateur connecté
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Compte supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Your account has been deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+
+  /api/products:
+    get:
+      tags: [Products]
+      summary: Récupérer tous les produits (avec recherche et pagination)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Filtre partiel sur le nom du produit
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Numéro de page
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: Nombre d'éléments par page
+      responses:
+        '200':
+          description: Liste paginée des produits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Products]
+      summary: Créer un produit (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Produit créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/products/search:
+    get:
+      tags: [Products]
+      summary: Recherche avancée de produits (filtres, tri et pagination)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filtre par nom (LIKE)
+        - in: query
+          name: minPrice
+          schema:
+            type: number
+            minimum: 0
+          description: Prix minimum
+        - in: query
+          name: maxPrice
+          schema:
+            type: number
+            minimum: 0
+          description: Prix maximum
+        - in: query
+          name: categoryId
+          schema:
+            type: integer
+            minimum: 1
+          description: Identifiant de catégorie
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: Nombre maximal de résultats
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Décalage (pagination)
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [name, price, id]
+            default: name
+          description: Colonne de tri
+      responses:
+        '200':
+          description: Résultats de la recherche
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/products/with-category:
+    post:
+      tags: [Products]
+      summary: Créer un produit et sa catégorie en une transaction (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductWithCategoryInput'
+      responses:
+        '201':
+          description: Produit et catégorie créés avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/products/{id}:
+    get:
+      tags: [Products]
+      summary: Récupérer un produit par son ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Détails du produit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Products]
+      summary: Mettre à jour complètement un produit (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Produit mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Products]
+      summary: Mettre à jour partiellement un produit (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPatchInput'
+      responses:
+        '200':
+          description: Produit mis à jour partiellement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Products]
+      summary: Supprimer un produit (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Produit supprimé (aucun contenu)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/products/{id}/stock:
+    patch:
+      tags: [Products]
+      summary: Mettre à jour le stock d'un produit (ADMIN uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stock]
+              properties:
+                stock:
+                  type: integer
+                  minimum: 0
+                  example: 25
+      responses:
+        '200':
+          description: Stock mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/categories:
+    get:
+      tags: [Categories]
+      summary: Récupérer toutes les catégories
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste des catégories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Categories]
+      summary: Créer une catégorie
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '201':
+          description: Catégorie créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/categories/{id}:
+    get:
+      tags: [Categories]
+      summary: Récupérer une catégorie par son ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Détails de la catégorie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Categories]
+      summary: Mettre à jour une catégorie
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '200':
+          description: Catégorie mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryItemResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Categories]
+      summary: Supprimer une catégorie
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Catégorie supprimée (aucun contenu)
+        '400':
+          description: Impossible de supprimer une catégorie liée à des produits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY / JWT
+      description: >
+        Authentification par clé API (`Authorization: Bearer <API_KEY>`) ou par token JWT obtenu via POST /api/auth/login.
+        Collez la clé API (ou le JWT) dans Authorize : Swagger ajoute automatiquement le préfixe "Bearer ".
+
+  parameters:
+    IdParam:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: Identifiant numérique de la ressource
+
+  responses:
+    Unauthorized:
+      description: Token d'accès manquant, invalide ou expiré
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleError'
+    Forbidden:
+      description: Permissions insuffisantes (rôle ADMIN requis)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleError'
+    BadRequest:
+      description: Requête invalide ou erreur de validation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Ressource introuvable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    RegisterInput:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        password:
+          type: string
+          minLength: 6
+          example: Secret123!
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        password:
+          type: string
+          example: Secret123!
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+        role:
+          type: string
+          example: ADMIN
+
+    RefreshInput:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          example: USER
+        created_at:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Clavier mécanique
+        price:
+          type: number
+          example: 79.99
+        stock:
+          type: integer
+          example: 15
+        category_id:
+          type: integer
+          nullable: true
+          example: 1
+
+    ProductInput:
+      type: object
+      required: [name, price]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          example: Clavier mécanique
+        price:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+          example: 79.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 10
+        category_id:
+          type: integer
+          nullable: true
+          minimum: 1
+          example: 1
+
+    ProductPatchInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+        price:
+          type: number
+          minimum: 0
+        stock:
+          type: integer
+          minimum: 0
+        category_id:
+          type: integer
+          nullable: true
+          minimum: 1
+
+    ProductWithCategoryInput:
+      type: object
+      required: [name, price]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          example: Souris sans fil
+        price:
+          type: number
+          minimum: 0
+          example: 49.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 20
+        categoryName:
+          type: string
+          example: Périphériques
+
+    ProductListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+
+    ProductItemResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Product'
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Électronique
+
+    CategoryInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          example: Électronique
+
+    CategoryItemResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Category'
+
+    SimpleError:
+      type: object
+      properties:
+        error:
+          type: string
+
+    ValidationErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            type: object
+        error:
+          type: object
+          properties:
+            status:
+              type: integer
+            message:
+              type: string

@@ -1,0 +1,27 @@
+# Local settings and generated files
+.env
+.env.*
+!.env.example
+node_modules/
+vendor/
+target/
+build/
+dist/
+coverage/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+.phpunit.result.cache
+
+# Source folders retained from the earlier TPs; curated copies are above.
+/lab3-jpatp3/
+/tp6/
+/tp8/
+
+# Postman environment files may contain API keys
+**/dev.postman_environment.json
+**/*postman_environment*.json
+**/*postman_environment*
+**/env*.postman_environment*

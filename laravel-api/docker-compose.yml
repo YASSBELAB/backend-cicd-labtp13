@@ -1,0 +1,30 @@
+services:
+  php-fpm:
+    build:
+      context: .
+      target: php
+    container_name: lab8-php-fpm
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: .
+      target: nginx
+    container_name: lab8-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
