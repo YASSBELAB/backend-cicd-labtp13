@@ -34,7 +34,7 @@ jobs:
 
     # Variables d'environnement injectées dynamiquement au niveau du job
     env:
-      APP_KEY: base64:VGhpc0lzQU5vbkRldk9ubHlUZXN0QXBwS2V5MTIzNDU2Nzg=
+      APP_KEY: base64:MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_DATABASE: test_db
