@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build & Test (PHP 8.2 / MySQL)
+    name: Build & Test (PHP 8.4 / MySQL)
     runs-on: ubuntu-latest
 
     # Application du principe du moindre privilège (DevSecOps)
@@ -49,7 +49,8 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath
           coverage: xdebug
 
       # 3. Mise en cache des dépendances Composer pour accélérer l'exécution
@@ -63,7 +64,7 @@ jobs:
 
       # 4. Installation des dépendances via Composer
       - name: Install Composer Dependencies
-        run: composer install --working-dir=laravel-api --ignore-platform-reqs
+        run: composer install --working-dir=laravel-api --no-interaction --prefer-dist
 
       # 5. Exécution de la suite de tests (PHPUnit / Pest)
       - name: Run Tests

@@ -6,7 +6,7 @@ TP8 – Développement d’une API RESTful avec Laravel (Gestion des Produits et
 # Instructions d'installation
 
 ## 1. Prérequis
-- PHP 8.2 ou supérieur
+- PHP 8.4 ou supérieur
 - Composer
 - MySQL
 - Laravel
