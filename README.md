@@ -1,4 +1,6 @@
-# Lab 13: Backend CI/CD
+# backend-cicd-labtp13
+
+## Lab 13: Backend CI/CD
 
 This repository groups the three API projects used in the lab:
 
